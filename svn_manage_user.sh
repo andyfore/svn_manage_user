@@ -87,7 +87,7 @@ function find_user_quiet {
 	user=$1
 	user_found=false
 
-	if (`grep -Fxq "$user = rw" $rconn_acl $retail_acl`) || (`grep -Fxq "$user = r" $rconn_acl $retail_acl`) || (`grep -Fxq "$user:" $htpasswd_file`);
+	if (`grep -Fxq "$user = rw" $rconn_acl $retail_acl`) || (`grep -Fxq "$user = r" $rconn_acl $retail_acl`) || (`grep -Fq "$user:" $htpasswd_file`);
 	then
 		user_found=true
 	fi
@@ -137,6 +137,7 @@ function add_svn_user {
 		echo "Available repositories:"
 		echo "1. rconnection"
 		echo "2. retail"
+		echo "3. Both rconnection and retail"
 		echo
 		echo -n "Please select the repository: "
 		read svn_repo
@@ -174,6 +175,10 @@ function add_svn_user {
 			2) $htpasswd_binary -b -m $htpasswd_file $svn_user $pass1
 			   echo "$svn_user = $lvl_txt" >> $retail_acl
 			   ;;
+                        3) $htpasswd_binary -b -m $htpasswd_file $svn_user $pass1
+                           echo "$svn_user = $lvl_txt" >> $retail_acl
+                           echo "$svn_user = $lvl_txt" >> $rconn_acl
+                           ;;
 		esac
 	else
 		echo "Password was either too short, not complex enough or a null/empty value."
